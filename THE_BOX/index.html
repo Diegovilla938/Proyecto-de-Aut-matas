@@ -1,0 +1,73 @@
+<!-- index.html: se organizan las pantallas, el marcador y el diagrama de THE BOX. -->
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>THE BOX</title><link rel="icon" href="assets/the-box-icon.svg"><link rel="stylesheet" href="arcade.css"></head>
+<body>
+<!-- Estructura principal de THE BOX: arriba se muestra el título y el marcador. --><main class="shell">
+  <header class="topbar"><div class="brand-animated"><div class="eyebrow">Proyecto de Autómatas y Lenguajes Formales</div><h1>THE <span>BOX</span></h1></div><span class="badge-live">¡A JUGAR!</span></header>
+  <!-- Marcador: puntos recogidos, nivel, enemigos y progreso. -->
+<section class="hud" aria-label="Marcador del juego">
+    <div class="hud-card"><span class="hud-label">PUNTOS RECOLECTADOS</span><strong class="hud-value" id="score-display">0</strong></div>
+    <div class="hud-card"><span class="hud-label">NIVEL ACTUAL</span><strong class="hud-value cyan" id="hud-level">1 / 5</strong></div>
+    <div class="hud-card"><span class="hud-label">ENEMIGOS</span><strong class="hud-value cyan" id="hud-enemies">1</strong></div>
+    <div class="hud-card"><span class="hud-label">PROGRESO DEL NIVEL <span id="hud-percent" style="float:right">0%</span></span><div class="progress-track" role="progressbar" aria-label="Progreso del nivel" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="hud-progress"><div class="progress-fill" id="hud-progress-fill"></div></div><span class="panel-sub" id="hud-collected">0 / 0 puntos</span></div>
+  </section>
+  <!-- Zona de juego y diagrama visual del autómata del jugador. -->
+<div class="game-layout"><section class="arena-wrap" aria-label="Área de juego"><div id="contenedor"></div><span class="arena-tag">★ RECOGE LOS PUNTOS</span></section>
+  <section class="player-afd sidepanel" id="diagrama-jugador" aria-label="Diagrama de transiciones del jugador por nivel">
+    <div class="panel-head"><div><h2>◇ Autómata del jugador</h2><div class="panel-sub">UN CICLO POR NIVEL · NIVEL COMPLETADO = ACEPTACIÓN</div></div><span class="player-level-tag" id="player-diagram-level">NIVEL 1 / 5</span></div>
+    <div class="player-afd-layout">
+      <div class="graph-card"><svg viewBox="0 -38 360 348" role="img" aria-label="Diagrama con JUGANDO, RECOLECTANDO, NIVEL COMPLETADO (doble círculo) y DERROTA">
+        <defs><marker id="player-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#5e91ad"/></marker><marker id="player-arrow-on" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#ffe183"/></marker></defs>
+        <path d="M6 74 H47" stroke="#83bcd0" stroke-width="2" fill="none" marker-end="url(#player-arrow)"/><text class="graph-label" x="7" y="59">INICIO</text>
+        <path class="graph-edge player-edge" data-player-edge="JUGANDO-RECOLECTANDO" d="M130 73 H220" marker-end="url(#player-arrow)"/><text class="graph-label" x="173" y="62" text-anchor="middle">Recoge puntos</text>
+        <!-- Bucle visual: mientras quedan puntos, el jugador permanece en RECOLECTANDO. -->
+        <path class="graph-edge player-edge" d="M242 37 C218 -30 322 -30 299 37" marker-end="url(#player-arrow)"/><text class="graph-label" x="270" y="-16" text-anchor="middle">Recoge otro punto</text>
+        <path class="graph-edge player-edge" data-player-edge="RECOLECTANDO-NIVEL_COMPLETADO" d="M269 120 V193" marker-end="url(#player-arrow)"/><text class="graph-label" x="276" y="160">Meta</text>
+        <path class="graph-edge player-edge" data-player-edge="JUGANDO-DERROTA" d="M85 118 V195" marker-end="url(#player-arrow)"/><text class="graph-label" x="38" y="154">Captura</text>
+        <path class="graph-edge player-edge" data-player-edge="RECOLECTANDO-DERROTA" d="M228 102 Q185 163 126 216" marker-end="url(#player-arrow)"/><text class="graph-label" x="174" y="175">Captura</text>
+        <g class="graph-node player-node active" data-player-node="JUGANDO"><circle cx="85" cy="74" r="43"/><text x="85" y="78" text-anchor="middle">JUGANDO</text></g>
+        <g class="graph-node player-node" data-player-node="RECOLECTANDO"><circle cx="270" cy="74" r="49"/><text x="270" y="78" text-anchor="middle">RECOLECTANDO</text></g>
+        <g class="graph-node player-node" data-player-node="DERROTA"><circle cx="85" cy="246" r="44"/><text x="85" y="250" text-anchor="middle">DERROTA</text></g>
+        <g class="graph-node player-node acceptance" data-player-node="NIVEL_COMPLETADO"><circle cx="270" cy="246" r="49"/><circle cx="270" cy="246" r="42"/><text x="270" y="242" text-anchor="middle">NIVEL</text><text x="270" y="254" text-anchor="middle">COMPLETADO</text></g>
+      </svg></div>
+      <div class="player-afd-details"><div class="state-readout"><div class="state-title">ESTADO DEL JUGADOR</div><div class="state-name" id="player-state-name">JUGANDO</div><div class="state-info" id="player-state-info">Recolecta los puntos para completar este nivel.</div></div><div class="transition-readout" aria-live="polite"><b>Última transición:</b><div id="player-last-transition">Inicio del nivel → JUGANDO</div></div><div class="history-head">▤ HISTORIAL DEL NIVEL</div><div class="history-list" id="player-transition-history"><div class="transicion-item"><div class="transicion-condicion">Estado inicial: JUGANDO</div></div></div><p class="player-acceptance-note">◎ <strong>NIVEL COMPLETADO</strong> es el estado de aceptación de cada nivel. Al avanzar, el diagrama <strong>se reinicia en JUGANDO</strong>. Completar el nivel 5 también significa ganar THE BOX. DERROTA no es aceptación.</p></div>
+    </div>
+  </section></div>
+  <!-- Recordatorio de controles y botón para volver al menú. -->
+<footer class="footer-instructions"><span>◆ Recolecta los puntos y esquiva a los enemigos.</span><div class="keyboard"><span class="keycap">↑</span><span class="keycap">↓</span><span class="keycap">←</span><span class="keycap">→</span><span>mover</span></div><div class="keyboard"><span class="keycap">P</span><span class="keycap">ESC</span><span>pausar</span></div><button class="ui-btn secondary" id="menu-return" type="button">MENÚ PRINCIPAL</button></footer>
+</main>
+<!-- Menú principal: nombre del jugador, botones y clasificación Top 3. -->
+<div class="overlay" id="main-menu" role="dialog" aria-modal="true" aria-labelledby="menu-title"><div class="menu-panel"><div class="menu-icon">⬡</div><h2 id="menu-title">THE<br><span>BOX</span></h2><p>Explora cinco niveles, recolecta los puntos y observa las transiciones del autómata del jugador en tiempo real.</p><div class="player-entry"><label for="player-name">NOMBRE DEL JUGADOR</label><input id="player-name" type="text" maxlength="18" autocomplete="nickname" spellcheck="false" placeholder="Escribe tu nombre" required></div><div class="menu-actions"><button class="ui-btn" type="button" id="start-game">▶ INICIAR PARTIDA</button><button class="ui-btn secondary" type="button" id="show-guide" aria-haspopup="dialog">⌨ INSTRUCCIONES</button><button class="ui-btn secondary" type="button" id="toggle-fullscreen">⛶ PANTALLA COMPLETA</button><button class="ui-btn secondary" type="button" id="toggle-sound" aria-pressed="true">SONIDO: ACTIVADO</button></div><section class="leaderboard" aria-labelledby="leaderboard-title"><h3 id="leaderboard-title">🏆 TOP 3 JUGADORES</h3><ol id="top-three" aria-live="polite"><li class="leaderboard-empty">Todavía no hay récords. ¡Sé el primero!</li></ol><div class="leaderboard-note">Orden: mayor nivel alcanzado, después puntos</div></section><div class="menu-hint">AUTÓMATAS Y LENGUAJES FORMALES · 2026</div></div></div>
+<!-- Ventana independiente con las instrucciones del juego. -->
+<div class="overlay" id="instructions-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="instructions-title">
+  <section class="menu-panel instructions-panel">
+    <button class="modal-close" id="instructions-close-x" type="button" aria-label="Cerrar instrucciones">×</button>
+    <div class="instructions-symbol" aria-hidden="true">⌨</div>
+    <h2 id="instructions-title">CÓMO JUGAR</h2>
+    <p class="instructions-intro">¡Supera los cinco niveles de THE BOX!</p>
+    <div class="instructions-items">
+      <div><span class="instructions-icon">↑ ↓ ← →</span><span><strong>MUÉVETE</strong><small>Usa las flechas del teclado para recorrer el laberinto.</small></span></div>
+      <div><span class="instructions-icon">★</span><span><strong>RECOGE PUNTOS</strong><small>Recoge los puntos dorados para completar cada nivel.</small></span></div>
+      <div><span class="instructions-icon">✕</span><span><strong>EVITA A LOS ENEMIGOS</strong><small>Si te atrapan, pierdes y puedes reintentar desde el nivel 1.</small></span></div>
+      <div><span class="instructions-icon">P / ESC</span><span><strong>PAUSA</strong><small>Pausa y continúa la partida con P o ESC.</small></span></div>
+      <div><span class="instructions-icon">◎</span><span><strong>AUTÓMATA DEL JUGADOR</strong><small>Observa sus transiciones: NIVEL COMPLETADO es la aceptación de cada nivel.</small></span></div>
+    </div>
+    <button class="ui-btn instructions-back" id="instructions-back" type="button">← VOLVER AL MENÚ</button>
+  </section>
+</div>
+<!-- Cuenta regresiva que se muestra antes de empezar a jugar. -->
+<div class="overlay" id="countdown-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="countdown-title">
+  <section class="menu-panel countdown-panel">
+    <div class="countdown-small">THE BOX · NIVEL 1</div>
+    <h2 id="countdown-title">¡PREPÁRATE!</h2>
+    <div class="countdown-number" id="countdown-number" aria-live="polite">3</div>
+    <p class="countdown-message" id="countdown-message">La partida está por comenzar</p>
+    <div class="countdown-track" aria-hidden="true"><div class="countdown-fill" id="countdown-fill"></div></div>
+    <button class="ui-btn secondary countdown-cancel" id="countdown-cancel" type="button">← VOLVER AL MENÚ</button>
+  </section>
+</div>
+<!-- Ventana de derrota con opciones para reintentar o regresar al menú. -->
+<div class="overlay" id="defeat-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="defeat-title"><div class="menu-panel defeat-panel"><div class="defeat-symbol">✕</div><h2 id="defeat-title">¡DERROTA!</h2><p>Un enemigo te ha atrapado.</p><div class="defeat-stat" id="defeat-summary">Nivel 1 · 0 puntos</div><div class="menu-actions"><button class="ui-btn" id="retry-game" type="button">↻ REINTENTAR DESDE NIVEL 1</button><button class="ui-btn secondary" id="defeat-main-menu" type="button">⌂ MENÚ PRINCIPAL</button></div><p class="defeat-footnote">El resultado de esta partida se registra en el Top 3 cuando corresponde.</p></div></div>
+<!-- Primero se carga la biblioteca p5.js y después los archivos del juego. -->
+<script src="sonidos.js"></script><script src="p5/p5/p5.min.js"></script><script src="muro.js"></script><script src="puntos.js"></script><script src="plataforma.js"></script><script src="jugador.js"></script><script src="enemigo.js"></script><script src="sketch.js"></script><script src="arcade-ui.js"></script>
+</body></html>

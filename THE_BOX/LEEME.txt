@@ -1,0 +1,55 @@
+THE BOX - EDICIÓN ARCADE NEÓN (AFD)
+
+INICIO
+1. Descomprime este archivo ZIP.
+2. Abre index.html en Chrome, Edge o Firefox.
+3. Pulsa INICIAR PARTIDA.
+4. Usa las flechas para moverte; P o ESC para pausar.
+
+CAMBIOS VISUALES
+- Fondo nocturno azul/turquesa, tablero con retícula y paneles neón.
+- Menú principal y panel de instrucciones.
+- HUD con puntos, nivel, enemigos y barra de progreso.
+- Diagrama SVG del jugador por nivel y su historial de transiciones en tiempo real.
+- El diagrama del enemigo se retiró de la interfaz, pero su código de IA permanece activo.
+- Efectos de luz, transiciones CSS y partículas originales.
+
+Se mantienen las reglas de movimiento, colisiones, enemigo, AFD y los cinco niveles.
+El diagrama visible representa únicamente al jugador y reinicia su historial con cada nivel.
+
+
+NUEVO: TOP 3 Y PANTALLA COMPLETA
+- En el menú escribe el nombre antes de iniciar una partida.
+- El Top 3 ordena por mayor nivel alcanzado y después por puntos acumulados.
+- Los resultados se guardan automáticamente al perder o superar el nivel 5.
+- Se conservan únicamente los 3 mejores resultados, localmente en el navegador mediante localStorage.
+- Los récords no se comparten entre computadoras, navegadores o dispositivos.
+- Pantalla completa se activa desde el menú; ESC permite salir de ella.
+- El estado de aceptación NIVEL COMPLETADO del jugador tiene doble círculo.
+
+CORRECCIONES: AUTÓMATA DEL JUGADOR POR NIVEL
+- Estados: JUGANDO (inicial), RECOLECTANDO, NIVEL COMPLETADO (aceptación, doble círculo) y DERROTA.
+- JUGANDO -> RECOLECTANDO al recoger un punto.
+- RECOLECTANDO -> NIVEL COMPLETADO al recoger todos los puntos del nivel.
+- JUGANDO/RECOLECTANDO -> DERROTA al ser atrapado por un enemigo.
+- NIVEL COMPLETADO NO lleva a DERROTA: al siguiente nivel se inicia una ejecución nueva en JUGANDO.
+- Al completar el nivel 5 se muestra victoria final y la aceptación de ese nivel.
+- Al perder, REINTENTAR comienza una nueva partida desde nivel 1 y puntuación 0, sin pasar por el menú.
+- MENÚ PRINCIPAL permite regresar a la pantalla inicial.
+- El Top 3 se registra al terminar la partida, antes de reintentar. Los récords locales persisten.
+- Se quitó el diagrama y el historial visual del enemigo; su lógica y transiciones internas se conservan.
+- No se cambian colisiones, física, IA ni condiciones originales de victoria, pérdida o niveles.
+- Estos diagramas visualizan comportamientos; no constituyen por sí solos AFD matemáticamente totales.
+
+CORRECCIÓN MENÚ PRINCIPAL: ambos botones de retorno cierran la derrota, detienen la partida y muestran el menú. INICIAR PARTIDA siempre restablece desde nivel 1.
+
+ACTUALIZACIÓN DE INTERFAZ
+- El botón INSTRUCCIONES abre una ventana independiente con controles y objetivos; se puede cerrar con X, Volver al menú o ESC.
+- Al pulsar INICIAR PARTIDA, se muestra una cuenta regresiva 3, 2, 1, ¡YA! antes de permitir movimientos.
+- Durante la cuenta regresiva el jugador y los enemigos permanecen en pausa.
+- La cuenta regresiva incluye la opción Volver al menú sin comenzar la partida.
+
+SONIDOS
+Se incluyen efectos breves creados mediante Web Audio API en sonidos.js.
+No se utilizan canciones ni grabaciones externas. El menu permite silenciarlos.
+Los navegadores pueden exigir un clic del usuario antes de habilitar el audio.
